@@ -2,13 +2,15 @@ use std::fs;
 
 fn main() {
 
-  let it = fs::read_dir(".");
+  let it = fs::read_dir(".").unwrap();
 
-  if let Ok(files) = it {
-    for file in files {
-      if let Ok(f) = file {
-        println!("{:?}", f.file_name());
-      }
-    }
-  }
+  let x = it.flat_map(|file| {
+    file.unwrap().file_name();
+  }).collect();
+
+  println!("{:?}", x);
+
+  for f in it { 
+    println!("{:?}", f.unwrap().file_name());
+  };
 }
