@@ -1,4 +1,8 @@
 use std::fs;
+use std::env;
+use std::path::Path;
+
+static path: &'static Path = Path::new(".");
 
 /// Print the `dir_path` dir.
 fn print_dir(dir: &str) -> () {
@@ -11,6 +15,20 @@ fn print_dir(dir: &str) -> () {
   }
 }
 
+fn parse_args() {
+  let mut args = env::args();
+
+  loop {
+    match args.next() {
+      Some(arg) => {
+        path = Path::new(&arg);
+      },
+      None => break // There is no more argument
+    }
+  }
+}
+
 fn main() {
-  print_dir(".");
+  parse_args();
+//  print_dir(path);
 }
