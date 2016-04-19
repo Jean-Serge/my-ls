@@ -1,0 +1,4 @@
+[package]
+name = "my-ls"
+version = "0.1.0"
+authors = ["Jean-Serge <j.monbailly@orange.fr"]
