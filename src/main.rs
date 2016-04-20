@@ -9,13 +9,19 @@ struct Arguments {
 /// Print the `dir_path` dir.
 fn print_dir(dir: &String) -> () {
   // The unwrap function extracts the Ok() value of the Result
-  let it = fs::read_dir(dir).unwrap();
+  let mut it = fs::read_dir(dir).unwrap();
 
-  for f in it {
+  loop {
+    match it.next() {
+      Some(file) => println!("{}", file.unwrap().file_name().into_string().unwrap()),
+      None => break
+    }
+  }
+//  for f in it {
     // The into_string function will throw an error if it contains non-unicode characters
     // TODO : Handle Error
-    println!("{}", f.unwrap().file_name().into_string().unwrap());
-  }
+//    println!("{}", f.unwrap().file_name().into_string().unwrap());
+//  }
 }
 
 fn parse_args() -> Arguments {
@@ -25,7 +31,7 @@ fn parse_args() -> Arguments {
   // Skip the 1st argument (executable name)
   args.next();
 
-  // TODO : Check for Error (end of arguments)
+  // TODO : Handle Error (end of arguments)
   let path = args.next().unwrap();
   parsed_args.path = String::from(path.as_str());
 
