@@ -2,7 +2,9 @@ use std::fs;
 use std::env;
 use std::path::Path;
 
-static path: &'static Path = Path::new(".");
+struct Arguments<'a> {
+  path: &'a str
+}
 
 /// Print the `dir_path` dir.
 fn print_dir(dir: &str) -> () {
@@ -15,20 +17,25 @@ fn print_dir(dir: &str) -> () {
   }
 }
 
-fn parse_args() {
+unsafe fn parse_args() -> Arguments<'static> {
   let mut args = env::args();
+  let mut parsed_args = Arguments { path: "." };
 
-  loop {
     match args.next() {
       Some(arg) => {
-        path = Path::new(&arg);
+        let path: &'static str = arg.as_str();
+        parsed_args.path = path;
       },
-      None => break // There is no more argument
+      None => println!("Arguments parsing done !")// There is no more argument
     }
-  }
+
+  let final_args: Arguments = parsed_args;
+  return final_args;
 }
 
 fn main() {
-  parse_args();
+  unsafe {
+    parse_args();
+  }
 //  print_dir(path);
 }
