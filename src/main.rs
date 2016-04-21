@@ -13,37 +13,39 @@ fn print_dir(dir: &String) -> () {
 
   loop {
     match it.next() {
-      Some(file) => println!("{}", file.unwrap().file_name().into_string().unwrap()),
-      None => break
+      Some(file) => match file {
+          Ok(f)  => println!("{}", f.file_name().into_string().unwrap()),
+          Err(e) => println!("{}", e)
+      },
+      None => break // No more entries
     }
   }
-//  for f in it {
-    // The into_string function will throw an error if it contains non-unicode characters
-    // TODO : Handle Error
-//    println!("{}", f.unwrap().file_name().into_string().unwrap());
-//  }
 }
 
+/// Parse all command line arguments
+/// For now, it only look for a path in argument list
 fn parse_args() -> Arguments {
   let mut args = env::args();
   let mut parsed_args = Arguments { path: String::from(".") };
 
-  // Skip the 1st argument (executable name)
+  // Skip the first argument (executable name)
   args.next();
 
-  // TODO : Handle Error (end of arguments)
-  let path = args.next().unwrap();
-  parsed_args.path = String::from(path.as_str());
+  loop {
+    match args.next() {
+      Some(arg) => parsed_args.path = String::from(arg.as_str()),
+      None      => break // No more arguments
+    }
+  }
 
-  let final_args: Arguments = parsed_args;
-
-  return final_args;
+  return parsed_args;
 }
 
+/**
+ * First parses arguments.
+ * Then run the print_dir function with the given arguments.
+ */
 fn main() {
-  // Gathering arguments
   let args = parse_args();
-
-  // Passes reference to print_dir
   print_dir(&args.path);
 }
