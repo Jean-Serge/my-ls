@@ -16,7 +16,7 @@ fn print_usage(program: &str, opts: Options) {
  * Then run the print_dir function with the given arguments.
  */
 fn main() {
-    // Must enforce type 
+    // Must enforce type
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
 
@@ -24,14 +24,14 @@ fn main() {
     opts.optflag("h", "help", "print this help menu");
 
     let matches = match opts.parse(&args[1..]) {
-        Ok(m) => { m }
-        Err(f) => { panic!(f.to_string()) }
+        Ok(m) => m,
+        Err(f) => panic!(f.to_string()),
     };
-    
+
     if matches.opt_present("h") {
         print_usage(&program, opts);
         return;
     }
 
-    //list::print_dir(&args.path);
+    // list::print_dir(&args.path);
 }
