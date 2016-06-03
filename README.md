@@ -5,4 +5,6 @@ Rust implementation of the ls shell command
 
 Compile with `cargo build`
 
-Run with `cargo run -- ~`
+Run with `cargo run`
+
+Print usage with `cargo run -- -h`
