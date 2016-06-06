@@ -33,4 +33,12 @@ fn main() {
         print_usage(&program, opts);
         return;
     }
+
+    if matches.free.is_empty() {
+        list::print_dir(&String::from("."))
+    } else {
+        for path in &matches.free {
+            list::print_dir(path)
+        }
+    }
 }
