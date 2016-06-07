@@ -4,6 +4,7 @@ use getopts::Options;
 use std::env;
 
 mod list;
+mod sort;
 
 /// Print usage for the current program.
 ///
