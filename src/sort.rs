@@ -11,7 +11,7 @@ impl Sorter for fs::ReadDir {
         for f in self {
             match f {
                 Ok(f) => files.push(f),
-                _ => ()
+                _ => (),
             }
         }
 
