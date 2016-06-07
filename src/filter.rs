@@ -1,20 +1,11 @@
 use std::fs;
+use std::fs::DirEntry;
 
-trait Filter {
-    fn filter(&mut self, f: fn(Vec<fs::DirEntry>) -> Vec<fs::DirEntry>) -> Vec<fs::DirEntry>;
-}
+use std::iter;
 
-impl Filter for fs::ReadDir {
-    fn filter(&mut self, f: fn(Vec<fs::DirEntry>) -> Vec<fs::DirEntry>) -> Vec<fs::DirEntry> {
-        let mut files = Vec::new();
-
-        for f in self {
-            match f {
-                Ok(f) => files.push(f),
-                _ => (),
-            }
-        }
-
-        f(files)
+pub fn filter_hidden(file: DirEntry) -> bool {
+    match file.file_name().to_str() {
+        Some(n) => !n.starts_with("."),
+        None    => false,
     }
 }

@@ -42,4 +42,7 @@ fn main() {
             list::print_dir(path)
         }
     }
+
+    let no_hidden = std::fs::read_dir(&String::from(".")).unwrap();
+    let t = no_hidden.filter(|f| f.as_ref().file_name().to_str().unwrap().starts_with("."));
 }
