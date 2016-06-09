@@ -2,6 +2,7 @@ extern crate getopts;
 
 use getopts::Options;
 use std::env;
+use std::fs;
 
 mod list;
 mod filter;
@@ -43,6 +44,23 @@ fn main() {
         }
     }
 
-    let no_hidden = std::fs::read_dir(&String::from(".")).unwrap();
-    let t = no_hidden.filter(|f| f.as_ref().file_name().to_str().unwrap().starts_with("."));
+    let c = |f: &Result<fs::DirEntry,_>| match *f {
+        Ok(ref f) => !f.file_name().to_str().unwrap().starts_with("."),
+        _ => false
+    };
+
+    let no_hidden = fs::read_dir(&String::from(".")).unwrap();
+    let mut t = no_hidden.filter(c);
+
+    loop {
+        match t.next() {
+            Some(file) => {
+                match file {
+                    Ok(f) => println!("  {}", f.file_name().into_string().unwrap()),
+                    Err(e) => println!("{}", e),
+                }
+            }
+            None => break, // No more entries
+        }
+    }
 }
