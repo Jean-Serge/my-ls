@@ -1,16 +1,55 @@
-use std::fs;
+extern crate getopts;
 
-/// Print the `dir_path` dir.
-fn print_dir(dir: &str) -> () {
-  // The unwrap function extracts the Ok() value of the Result
-  let it = fs::read_dir(dir).unwrap();
+use getopts::Options;
+use std::env;
 
-  for f in it {
-    // The into_string function will throw an error if it contains non-unicode characters
-    println!("{}", f.unwrap().file_name().into_string().unwrap());
-  }
+mod list;
+mod filter;
+
+/// Print usage for the current program.
+///
+/// - program   : the current program name
+/// - opts      : array of options  to print
+fn print_usage(program: &str, opts: Options) {
+    let brief = format!("Usage: {} FILE [options]", program);
+    print!("{}", opts.usage(&brief));
 }
 
 fn main() {
-  print_dir(".");
+    // Must enforce type
+    let args: Vec<String> = env::args().collect();
+    let program = args[0].clone();
+
+    // Build new Options parser
+    let mut opts = Options::new();
+    opts.optflag("h", "help", "print this help menu");
+    opts.optflag("a", "all", "print all files (including hidden ones)");
+
+    let matches = match opts.parse(&args[1..]) {
+        Ok(m) => m,
+        Err(f) => panic!(f.to_string()),
+    };
+
+    // Check for options
+    if matches.opt_present("h") {
+        print_usage(&program, opts);
+        return;
+    }
+
+    let filter = if matches.opt_present("a") {
+        filter::no_filter
+    } else {
+        filter::no_hidden
+    };
+
+    // Fetch given path
+    let path = if matches.free.is_empty() {
+        vec![String::from(".")]
+    } else {
+        matches.free
+    };
+
+    for p in path {
+        list::print_dir(&p, filter)
+    }
 }
