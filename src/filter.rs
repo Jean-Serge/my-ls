@@ -4,8 +4,8 @@ use std::io::Error;
 
 pub fn no_hidden(entry: &Result<DirEntry, Error>) -> bool {
     match *entry {
-         Ok(ref f) => !f.file_name().to_str().unwrap().starts_with("."),
-         _ => false
+        Ok(ref f) => !f.file_name().to_str().unwrap().starts_with("."),
+        _ => false,
     }
 }
 
