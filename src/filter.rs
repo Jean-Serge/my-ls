@@ -1,11 +1,14 @@
-use std::fs;
 use std::fs::DirEntry;
 
-use std::iter;
+use std::io::Error;
 
-pub fn filter_hidden(file: DirEntry) -> bool {
-    match file.file_name().to_str() {
-        Some(n) => !n.starts_with("."),
-        None    => false,
+pub fn no_hidden(entry: &Result<DirEntry, Error>) -> bool {
+    match *entry {
+         Ok(ref f) => !f.file_name().to_str().unwrap().starts_with("."),
+         _ => false
     }
+}
+
+pub fn no_filter(_: &Result<DirEntry, Error>) -> bool {
+    true
 }
