@@ -2,7 +2,6 @@ extern crate getopts;
 
 use getopts::Options;
 use std::env;
-use std::fs;
 
 mod list;
 mod filter;
@@ -24,6 +23,7 @@ fn main() {
     // Build new Options parser
     let mut opts = Options::new();
     opts.optflag("h", "help", "print this help menu");
+    opts.optflag("a", "all", "print all files (including hidden ones)");
 
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
@@ -36,31 +36,20 @@ fn main() {
         return;
     }
 
-    if matches.free.is_empty() {
-        list::print_dir(&String::from("."))
+    let filter = if matches.opt_present("a") {
+        filter::no_filter
     } else {
-        for path in &matches.free {
-            list::print_dir(path)
-        }
-    }
-
-    let c = |f: &Result<fs::DirEntry,_>| match *f {
-        Ok(ref f) => !f.file_name().to_str().unwrap().starts_with("."),
-        _ => false
+        filter::no_hidden
     };
 
-    let no_hidden = fs::read_dir(&String::from(".")).unwrap();
-    let mut t = no_hidden.filter(c);
+    // Fetch given path
+    let path = if matches.free.is_empty() {
+        vec![String::from(".")]
+    } else {
+        matches.free
+    };
 
-    loop {
-        match t.next() {
-            Some(file) => {
-                match file {
-                    Ok(f) => println!("  {}", f.file_name().into_string().unwrap()),
-                    Err(e) => println!("{}", e),
-                }
-            }
-            None => break, // No more entries
-        }
+    for p in path {
+        list::print_dir(&p, filter)
     }
 }
