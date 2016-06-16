@@ -37,7 +37,7 @@ fn main() {
     }
 
     let filter = if matches.opt_present("a") {
-        filter::no_filter
+        filter::all_files
     } else {
         filter::no_hidden
     };

@@ -9,6 +9,6 @@ pub fn no_hidden(entry: &Result<DirEntry, Error>) -> bool {
     }
 }
 
-pub fn no_filter(_: &Result<DirEntry, Error>) -> bool {
+pub fn all_files(_: &Result<DirEntry, Error>) -> bool {
     true
 }
